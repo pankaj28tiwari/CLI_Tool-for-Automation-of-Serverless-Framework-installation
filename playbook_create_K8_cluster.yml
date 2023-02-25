@@ -1,0 +1,29 @@
+---
+
+# This playbook will create master node and worker node
+
+#  tasks:
+
+- hosts: all
+#  remote_user: cc
+#  become: yes
+#  become_user: root
+  tasks:
+  - name: creating master node by running kubeadm init
+    ansible.builtin.shell:
+      cmd: 'sudo kubeadm init  --node-name kubemaster --control-plane-endpoint "{{ master }}" --pod-network-cidr=10.244.0.0/16;'
+    register: output
+
+
+  - name: run kube config commands
+    ansible.builtin.shell:
+      cmd: sudo mkdir -p .kube; sudo cp -i /etc/kubernetes/admin.conf .kube/config; sudo chown $(id -u):$(id -g) .kube/config
+      #;chmod -R 777 .kube
+
+  - name: setting a permission on kube config commands
+    ansible.builtin.shell:
+      cmd: sudo chmod -R 777 $HOME/.kube
+
+
+
+
